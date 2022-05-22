@@ -17,11 +17,10 @@ def parse_args():
                         help="List of URL's for which we wish to download the html")
     parser.add_argument("--metadata", action="store_true", required=False,
                         help='Also prints the metadata for each URL passed.')
-    parser.add_argument("--fetch_all", action="store_true", required=False,
-                        help='Also downloads the relevant asset class for the url passed so that we can access webpage locally.')
     parser.add_argument("--output_dir", required=False,
                         default=_cwd, help='Output dir to store the output file. By default it is current dir - [{}]'.format(_cwd))
-
+    # parser.add_argument("--fetch_all", action="store_true", required=False,
+    #                    help='Also downloads the relevant asset class for the url passed so that we can access webpage locally.')
     args = parser.parse_args()
     return args
 
@@ -70,14 +69,9 @@ def download_site(args, url):
     if args.metadata:
         print_metadata(r)
 
-    if args.fetch_all:
-        fetchall(url)
-        return
-        # to get the complete webpage -
-        download_folder = "/Users/saurabh/curl/web_scrapper/{}".format(
-            main_url)
-        # kwargs = {'bypass_robots': True, 'project_name': 'sm_nm'}
-        save_webpage(url, download_folder)  # , **kwargs)
+    # if args.fetch_all:
+    #     fetchall(url)
+    #     return
 
 
 def savenRename(soup, pagefolder, session, url, tag, inner):
@@ -105,20 +99,20 @@ def savenRename(soup, pagefolder, session, url, tag, inner):
                 print(exc, file=sys.stderr)
 
 
-def fetchall(url, pagepath='/Users/saurabh/curl/web_scrapper/'):
-    session = requests.Session()
-    # ... whatever other requests config you need here
-    response = session.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-    path, _ = os.path.splitext(pagepath)
-    print("Got path - ", path)
-    pagefolder = path+'_files'  # page contents folder
-    tags_inner = {'img': 'src', 'link': 'href',
-                  'script': 'src'}  # tag&inner tags to grab
-    for tag, inner in tags_inner.items():  # saves resource files and rename refs
-        savenRename(soup, pagefolder, session, url, tag, inner)
-    with open(path+'.html', 'wb') as file:  # saves modified html doc
-        file.write(soup.prettify('utf-8'))
+# def fetchall(url, pagepath='/Users/saurabh/curl/web_scrapper/'):
+#     session = requests.Session()
+
+#     response = session.get(url)
+#     soup = BeautifulSoup(response.text, "html.parser")
+#     path, _ = os.path.splitext(pagepath)
+#     print("Got path - ", path)
+#     pagefolder = path+'_files'  # page contents folder
+#     tags_inner = {'img': 'src', 'link': 'href',
+#                   'script': 'src'}  # tag&inner tags to grab
+#     for tag, inner in tags_inner.items():  # saves resource files and rename refs
+#         savenRename(soup, pagefolder, session, url, tag, inner)
+#     with open(path+'.html', 'wb') as file:  # saves modified html doc
+#         file.write(soup.prettify('utf-8'))
 
 
 def main():
